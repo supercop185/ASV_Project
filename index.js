@@ -112,18 +112,53 @@ function ASV_Moves(i, j) {
 }
 
 function fill(i, j){
-//asdasdsadsadsa
-//asdsadsadsad
+    let aux_x, aux_y, xi, yi, xf, yf;
+
+    console.log(Matriz_Mapeamento.length,Matriz_Mapeamento[i].length)
+    //verificar coordenadas iniciais controlando as linhas i
+    if (i == 0){
+        xi = i;
+        xf = i + 1;
+    }
+    else{
+        xi = i - 1;
+        if ((i + 1) > Matriz_Mapeamento.length)
+            xf = i;
+        else
+            xf = i + 1;
+    }
+    //verificar coordenadas iniciais controlando as colunas j
+    if (j == 0){
+        yi = j;
+        yf = j + 1;
+    }
+    else{
+        yi = j - 1;
+        if ((j + 1) > Matriz_Mapeamento[i].length)
+            yf = j;
+        else
+            yf = j + 1;
+    }
+    console.log(i, j, xi, yi, xf, yf);
+    for (aux_x = xi; aux_x <= xf; aux_x++)
+        for (aux_y = yi; aux_y <= yf; aux_y++)
+            Matriz_Mapeamento[aux_x][aux_y] = 3;
+    console.table(Matriz_Mapeamento);
 }
 
 // 1 - Viu, 2 - Bloco, 3 - Poluida, 4 -- ambos
 function ASV_Mapping() {
+    let opt1 = true;
     let opt = 1, poluicao, obst, obst1, obst2;
     let i = 1, j = 0, flag = 0;
 
-    while ((opt == 1) && (i < 11)) {
-        obst = readlineSync.question('Sensor meio obstaculo 0 ou 2 ? ');
-        poluicao = readlineSync.question('Sensor poluição 0 ou 3 ? ');
+    while (opt1) {
+        poluicao = readlineSync.question('Sensor poluição 0 ou 3 ? ');//ver o que falta
+        if (poluicao == 3){
+            fill(i, j);
+            obst = readlineSync.question('Sensor meio obstaculo 0 ou 2 ? ');0 
+        }
+        /* obst = readlineSync.question('Sensor meio obstaculo 0 ou 2 ? ');
         if (poluicao == 0 && obst == 0) {
             Matriz_Mapeamento[i + 1][j] = 1;
             Matriz_Mapeamento[i][j] = 1;
@@ -157,7 +192,7 @@ function ASV_Mapping() {
         }
         else {
             Matriz_Mapeamento[i][j] = 4;
-        }
+        } */
         console.clear();
         console.table(Matriz_Mapeamento);
         ASV_Moves(i, j);
