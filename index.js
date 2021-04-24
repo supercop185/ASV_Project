@@ -74,6 +74,8 @@ function Init_Matriz_Coord() {
 
 //lê do ficheiro a matriz da area de funcionamento do ASV com as respetivas coordenadas reais
 
+//const nome = require("./ASV_Coord.json");
+
 function Ler_Ficheiro_Init_Matriz_Coord(){
     let i, j;
 
@@ -156,7 +158,8 @@ function ASV_Mapping() {
         poluicao = readlineSync.question('Sensor poluição 0 ou 3 ? ');//ver o que falta
         if (poluicao == 3){
             fill(i, j);
-            obst = readlineSync.question('Sensor meio obstaculo 0 ou 2 ? ');0 
+            obst = readlineSync.question('Sensor meio obstaculo 0 ou 2 ? ');
+
         }
         /* obst = readlineSync.question('Sensor meio obstaculo 0 ou 2 ? ');
         if (poluicao == 0 && obst == 0) {
@@ -209,8 +212,6 @@ function ASV_Mapping() {
             i += 3;
             flag = 0;
         }
-        //printf("\n i == %d ", i);
-        //printf("\n j == %d ", j);
         if (i >= 11)
             opt = 0;
         else {
