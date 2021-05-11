@@ -91,26 +91,29 @@ function Ler_Ficheiro_Init_Matriz_Coord() {
 function ASV_Moves(i, j) {
 
     let x = 0, y = 0;
-    let Vet_ASV_Dir = [024, 025, 026, 027]
+    //let Vet_ASV_Dir = [024, 025, 026, 027]
 
-    if ((i == 1) && (j == 0)) {
-        Matriz_ASV[0][y] = '*';//esta pode-se tirar
-        Vet_ASV_Seq_Pos.push({ CoordX: 0, CoordY: j });//esta pode-se tirar
-        Matriz_ASV[i][j] = '*';
-        Vet_ASV_Seq_Pos.push({ CoordX: i, CoordY: j });
-    }
-    else if (Math.abs(Vet_ASV_Pos[0] - i) == 0) {
-        Matriz_ASV[i][j] = '*';
-        Vet_ASV_Seq_Pos.push({ CoordX: i, CoordY: j });
-    }
-    else if (Math.abs(Vet_ASV_Pos[0] - i) > 1) {
-        for (x = Vet_ASV_Pos[0] + 1; x <= i; x++) {
-            Matriz_ASV[x][j] = '*';
-            Vet_ASV_Seq_Pos.push({ CoordX: i, CoordY: j });
-        }
-    }
-    Vet_ASV_Pos[0] = i;
-    Vet_ASV_Pos[1] = j;
+    Matriz_ASV[i][j] = '*';
+    Vet_ASV_Seq_Pos.push({ CoordX: i, CoordY: j });
+
+    /*    if ((i == 1) && (j == 0)) {
+           Matriz_ASV[0][y] = '*';//esta pode-se tirar
+           Vet_ASV_Seq_Pos.push({ CoordX: 0, CoordY: j });//esta pode-se tirar
+           Matriz_ASV[i][j] = '*';
+           Vet_ASV_Seq_Pos.push({ CoordX: i, CoordY: j });
+       }
+       else if (Math.abs(Vet_ASV_Pos[0] - i) == 0) {
+           Matriz_ASV[i][j] = '*';
+           Vet_ASV_Seq_Pos.push({ CoordX: i, CoordY: j });
+       }
+       else if (Math.abs(Vet_ASV_Pos[0] - i) > 1) {
+           for (x = Vet_ASV_Pos[0] + 1; x <= i; x++) {
+               Matriz_ASV[x][j] = '*';
+               Vet_ASV_Seq_Pos.push({ CoordX: i, CoordY: j });
+           }
+       }
+       Vet_ASV_Pos[0] = i;
+       Vet_ASV_Pos[1] = j; */
     /*     var ss = String.fromCharCode(Vet_ASV_Dir[0]);
         console.log("sentido", ss); */
     //console.table(Vet_ASV_Seq_Pos[0]);
@@ -187,7 +190,7 @@ function fill_Obst(auxIJ, head, obst_d, obst_m, obst_u) {
             else if (Matriz_Mapeamento[auxIJ[1]][auxIJ[3]] == 0)
                 Matriz_Mapeamento[auxIJ[1]][auxIJ[3]] = obst_m;
         }
-        else {
+        else if (obst_m == 0) {
             if (Matriz_Mapeamento[auxIJ[1]][auxIJ[3]] == 0)
                 Matriz_Mapeamento[auxIJ[1]][auxIJ[3]] = 1;
         }
@@ -197,7 +200,7 @@ function fill_Obst(auxIJ, head, obst_d, obst_m, obst_u) {
             else if (Matriz_Mapeamento[auxIJ[0]][auxIJ[3]] == 0)
                 Matriz_Mapeamento[auxIJ[0]][auxIJ[3]] = obst_u;
         }
-        else {
+        else if (obst_u == 0) {
             if (Matriz_Mapeamento[auxIJ[0]][auxIJ[3]] == 0)
                 Matriz_Mapeamento[auxIJ[0]][auxIJ[3]] = 1;
         }
@@ -207,7 +210,7 @@ function fill_Obst(auxIJ, head, obst_d, obst_m, obst_u) {
             else if (Matriz_Mapeamento[auxIJ[2]][auxIJ[3]] == 0)
                 Matriz_Mapeamento[auxIJ[2]][auxIJ[3]] = obst_d;
         }
-        else {
+        else if (obst_d == 0) {
             if (Matriz_Mapeamento[auxIJ[2]][auxIJ[3]] == 0)
                 Matriz_Mapeamento[auxIJ[2]][auxIJ[3]] = 1;
         }
@@ -279,6 +282,8 @@ function fill_Pol(i, j, pol1) {
         for (aux_y = yi; aux_y <= yf; aux_y++)
             if (pol1 != 3)
                 Matriz_Mapeamento[i][j] = 1;
+            else if (Matriz_Mapeamento[aux_x][aux_y] == 2)
+                Matriz_Mapeamento[aux_x][aux_y] = 4;
             else
                 Matriz_Mapeamento[aux_x][aux_y] = pol1;
 
@@ -286,30 +291,32 @@ function fill_Pol(i, j, pol1) {
 }
 
 function sensors(i, j, head) {
+    let obst_m, obst_u, obst_d;
+
     console.log("leitura :", i, j, head, Matriz_Mapeamento[i][j]);
     if (Matriz_Mapeamento[i][j] != 2 && Matriz_Mapeamento[i][j] != 3 && Matriz_Mapeamento[i][j] != 4) {
         poluicao = readlineSync.question('Sensor poluição 0 ou 3 ? ');
         fill_Pol(i, j, poluicao);
-    } 
+    }
     auxIJ = direction(i, j, head);
-    console.log(auxIJ, head);
-    if (!(i == Matriz_Mapeamento.length && head == 'D') && !(i == 0 && head == 'U') && 
-            !(j == 0 && head == 'L') && !(j + 1 == Matriz_Mapeamento[i].length && head == 'R')) {
+    console.log(auxIJ, head, "aqui");
+    if (!(i == Matriz_Mapeamento.length && head == 'D') && !(i == 0 && head == 'U') &&
+        !(j == 0 && head == 'L') && !(j + 1 == Matriz_Mapeamento[i].length && head == 'R')) {
         console.log("entrei");
-        if (head == 'R' || head == 'L'){
-            if (Matriz_Mapeamento[auxIJ[1]][auxIJ[3]] == 0 || Matriz_Mapeamento[auxIJ[1]][auxIJ[3]] == 3)
+        if (head == 'R' || head == 'L') {
+            if ((Matriz_Mapeamento[auxIJ[1]][auxIJ[3]] == 0 || Matriz_Mapeamento[auxIJ[1]][auxIJ[3]] == 3))
                 obst_m = readlineSync.question('Sensor meio obstaculo 0 ou 2 ? ');
-            if (Matriz_Mapeamento[auxIJ[0]][auxIJ[3]] == 0 || Matriz_Mapeamento[auxIJ[0]][auxIJ[3]] == 3)
+            if ((Matriz_Mapeamento[auxIJ[0]][auxIJ[3]] == 0 || Matriz_Mapeamento[auxIJ[0]][auxIJ[3]] == 3) && i - 1 >= 0)
                 obst_u = readlineSync.question('Sensor cima obstaculo 0 ou 2 ? ');
-            if (Matriz_Mapeamento[auxIJ[2]][auxIJ[3]] == 0 || Matriz_Mapeamento[auxIJ[2]][auxIJ[3]] == 3)
+            if ((Matriz_Mapeamento[auxIJ[2]][auxIJ[3]] == 0 || Matriz_Mapeamento[auxIJ[2]][auxIJ[3]] == 3) && i + 1 <= Matriz_Mapeamento.length)
                 obst_d = readlineSync.question('Sensor baixo obstaculo 0 ou 2 ? ');
         }
-        else{
+        else {
             if (Matriz_Mapeamento[auxIJ[3]][auxIJ[1]] == 0 || Matriz_Mapeamento[auxIJ[3]][auxIJ[1]] == 3)
                 obst_m = readlineSync.question('Sensor meio obstaculo 0 ou 2 ? ');
-            if (Matriz_Mapeamento[auxIJ[3]][auxIJ[0]] == 0 || Matriz_Mapeamento[auxIJ[3]][auxIJ[0]] == 3)
+            if ((Matriz_Mapeamento[auxIJ[3]][auxIJ[0]] == 0 || Matriz_Mapeamento[auxIJ[3]][auxIJ[0]] == 3) && j - 1 >= 0)
                 obst_u = readlineSync.question('Sensor cima obstaculo 0 ou 2 ? ');
-            if (Matriz_Mapeamento[auxIJ[3]][auxIJ[2]] == 0 || Matriz_Mapeamento[auxIJ[3]][auxIJ[2]] == 3)
+            if ((Matriz_Mapeamento[auxIJ[3]][auxIJ[2]] == 0 || Matriz_Mapeamento[auxIJ[3]][auxIJ[2]] == 3) && j + 1 <= Matriz_Mapeamento[i].length)
                 obst_d = readlineSync.question('Sensor baixo obstaculo 0 ou 2 ? ');
         }
         //auxIJ = direction(i, j, head);
@@ -318,12 +325,49 @@ function sensors(i, j, head) {
     }
 }
 
+function route(i, j, head) {
+    let aux_i = i, aux_j = j, head_aux = head;
+    let opt = true;
+
+    //Vet_ASV_Seq_Pos.push({ CoordX: i, CoordY: j });
+    console.log(i, j, head, "route");
+    if (head == 'R') {
+        for (aux_j = j + 1; aux_j <= Matriz_Mapeamento[i].length; aux_j++) {
+            if (Matriz_Mapeamento[i][aux_j] != 2 && Matriz_Mapeamento[i][aux_j] != 4)
+                break;
+        }
+        return aux_j;
+    }
+    if (head == 'L') {
+        for (aux_j = Matriz_Mapeamento[i].length; aux_j > j; aux_j--) {
+            if (Matriz_Mapeamento[i][aux_j] != 2 || Matriz_Mapeamento[i][aux_j] != 4)
+                break;
+        }
+        return aux_j;
+    }
+
+    if (head == 'D') {
+        for (aux_i = i + 1; aux_i <= Matriz_Mapeamento.length; aux_i++) {
+            if (Matriz_Mapeamento[aux_i][j] != 2 || Matriz_Mapeamento[aux_i][j] != 4)
+                break;
+        }
+        return aux_i;
+    }
+    if (head == 'U') {
+        for (aux_i = Matriz_Mapeamento.length; aux_i > i; aux_i--) {
+            if (Matriz_Mapeamento[aux_i][j] != 2 || Matriz_Mapeamento[aux_i][j] != 4)
+                break;
+        }
+        return aux_i;
+    }
+}
+
 // 1 - Viu, 2 - Bloco, 3 - Poluida, 4 -- ambos
 function ASV_Mapping() {
     let auxIJ = [];
     let opt1 = true;
     let opt = 1, poluicao, obst_m, obst_u, obst_d;
-    let i = 1, j = 0, aux_i, aux_j, flag = 0, flag_h = 0; head = 'R';
+    let i = 0, j = 0, aux_i, aux_j, flag = 0, flag_h = 0, head = 'R';
 
     ASV_Moves(i, j);
     sensors(i, j, head);
@@ -333,6 +377,11 @@ function ASV_Mapping() {
 
         //head = 'R' - Dir, 'L' - Esq, 'U' - Cim, 'D' - Bx
         if ((head == 'R') && (j + 1 < Matriz_Mapeamento[i].length) && (Matriz_Mapeamento[i][j + 1] != 2) && (Matriz_Mapeamento[i][j + 1] != 4)) {
+            if ((flag == 1) && aux_j == j) {
+                i--;
+                j--;
+                flag = 0;
+            }
             j++;
             console.log("Caminho livre incremento a coluna", j);
             ASV_Moves(i, j);
@@ -341,24 +390,20 @@ function ASV_Mapping() {
             console.table(Matriz_Mapeamento);
         }
         else if ((head == 'R') && ((j + 1 >= Matriz_Mapeamento[i].length) || (Matriz_Mapeamento[i][j + 1] == 2 || Matriz_Mapeamento[i][j + 1] == 4))) {
+            if ((Matriz_Mapeamento[i][j + 1] == 2 || Matriz_Mapeamento[i][j + 1] == 4)) {
+                aux_j = route(i, j, head);
+                flag = 1;
+                console.log(aux_j, "flag", flag);
+            }
             head = 'D';
             console.log("Caminho impedido mudei direção :", i, j, head);
-            /*             if (Matriz_Mapeamento[i+1][j] != 2 && Matriz_Mapeamento[i+1][j] == 4) {
-                            flag = 1;
-                            aux_i = i;
-                            for (aux_j = j; aux_j < Matriz_Mapeamento[i].length; aux_j++)
-                                if ((Matriz_Mapeamento[i][j + 1] != 2) && (Matriz_Mapeamento[i][j + 1] != 2))
-                                    break;
-            
-                        } */
-            //if (Matriz_Mapeamento[i + 1][j] != 1 && Matriz_Mapeamento[i + 1][j] != 1)
             sensors(i, j, head);
             console.table(Matriz_Mapeamento);
         }
         /********/
         if ((head == 'D') && (Matriz_Mapeamento[i + 1][j] != 2) && (Matriz_Mapeamento[i + 1][j] != 4) && (i + 1 < Matriz_Mapeamento.length)) {
             i++;
-            console.log("Caminho desimpedido incremento a linha :", i, j, head);
+            //console.log("Caminho desimpedido incremento a linha :", i, j, head);
             ASV_Moves(i, j);
             sensors(i, j, head);
             head = 'R';
@@ -377,7 +422,8 @@ function ASV_Mapping() {
             console.log("Caminho livre decremento a linha", i);
             ASV_Moves(i, j);
             sensors(i, j, head);
-            head = 'R'
+            if ((Matriz_Mapeamento[i - 1][j - 1] != 2) && (Matriz_Mapeamento[i - 1][j - 1] != 4))
+                head = 'R';
             console.table(Matriz_ASV);
             console.table(Matriz_Mapeamento);
         }
